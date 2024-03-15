@@ -29,11 +29,20 @@ app.post("/", async (req, res) => {
           "Content-Type": "application/json",
         },
       };
+
       request(clientServerOptions, function (error, response) {
         console.log(error, response.body);
-        res.status(response.status).json({
-          data: response.body,
-        });
+        let body = JSON.parse(response.body);
+
+        if (body.error_messages) {
+          res.status(500).json({
+            data: response.body,
+          });
+        } else {
+          res.status(201).json({
+            data: response.body,
+          });
+        }
       });
     });
 });
