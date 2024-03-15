@@ -6,7 +6,9 @@ admin.initializeApp({
 });
 
 const ordersApi = require("./apis/orders");
+const checkoutsApi = require("./apis/checkouts");
 
 module.exports = {
   ...ordersApi,
+  ...checkoutsApi,
 };
