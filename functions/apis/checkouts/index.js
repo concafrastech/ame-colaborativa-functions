@@ -14,17 +14,24 @@ app.use(cors({ origin: true }));
 
 app.post("/", async (req, res) => {
   logger.info("Iniciando criação de checkout.");
+  let apiUrl = process.env.SANDBOX_API_PAGSEGURO;
+  let token = process.env.SANDBOX_TOKEN_PAGSEGURO;
+
+  if (req.body.isProduction) {
+    apiUrl = process.env.API_PAGSEGURO;
+    token = process.env.TOKEN_PAGSEGURO;
+  }
 
   await db
     .collection("checkouts")
     .add(req.body)
     .then(() => {
       let clientServerOptions = {
-        uri: `${process.env.SANDBOX_API_PAGSEGURO}/checkouts`,
-        body: JSON.stringify(req.body),
+        uri: `${apiUrl}/checkouts`,
+        body: JSON.stringify(req.body.checkout),
         method: "POST",
         headers: {
-          Authorization: `Bearer ${process.env.SANDBOX_TOKEN_PAGSEGURO}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       };
@@ -34,12 +41,12 @@ app.post("/", async (req, res) => {
 
         if (body.error_messages) {
           res.status(500).json({
-            data: response.body,
+            data: body,
           });
         } else {
           logger.info("Checkout criado com sucesso");
           res.status(201).json({
-            data: response.body,
+            data: body,
           });
         }
       });
