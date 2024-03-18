@@ -22,9 +22,6 @@ app.post("/", async (req, res) => {
     token = process.env.TOKEN_PAGSEGURO;
   }
 
-  console.log(apiUrl);
-  console.log(token);
-
   await db
     .collection("checkouts")
     .add(req.body)
@@ -44,12 +41,12 @@ app.post("/", async (req, res) => {
 
         if (body.error_messages) {
           res.status(500).json({
-            data: response.body,
+            data: body,
           });
         } else {
           logger.info("Checkout criado com sucesso");
           res.status(201).json({
-            data: response.body,
+            data: body,
           });
         }
       });
