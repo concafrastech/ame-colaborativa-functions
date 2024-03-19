@@ -53,4 +53,19 @@ app.post("/", async (req, res) => {
     });
 });
 
+app.post("/success", async (req, res) => {
+  logger.info("Iniciando checkout success.");
+  let { body } = req;
+
+  await db
+    .collection("checkouts-success")
+    .add(body)
+    .then(() => {
+      logger.info("Response da pagseguro salvo com sucesso.");
+      res.status(201).json({
+        data: "Inserido com sucesso.",
+      });
+    });
+});
+
 exports.checkouts = functions.https.onRequest(app);
