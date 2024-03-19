@@ -41,12 +41,12 @@ app.post("/", async (req, res) => {
 
         if (body.error_messages) {
           res.status(500).json({
-            data: body,
+            data: response.body,
           });
         } else {
           logger.info("Checkout criado com sucesso");
           res.status(201).json({
-            data: body,
+            data: response.body,
           });
         }
       });
