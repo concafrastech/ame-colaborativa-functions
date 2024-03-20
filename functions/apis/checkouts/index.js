@@ -22,7 +22,7 @@ app.post("/", async (req, res) => {
     token = process.env.TOKEN_PAGSEGURO;
   }
 
-  logger.info(`Body da requisição: ${req.body}`);
+  logger.info(`Body da requisição: ${JSON.stringify(req.body)}`);
 
   await db
     .collection("checkouts")
@@ -41,7 +41,7 @@ app.post("/", async (req, res) => {
       request(clientServerOptions, function (error, response) {
         let body = JSON.parse(response.body);
 
-        logger.info(`Response PagSeguro: ${body}`);
+        logger.info(`Response PagSeguro: ${response.body}`);
 
         if (body.error_messages) {
           res.status(500).json({
