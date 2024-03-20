@@ -22,6 +22,8 @@ app.post("/", async (req, res) => {
     token = process.env.TOKEN_PAGSEGURO;
   }
 
+  logger.info(`Body da requisição: ${req.body}`);
+
   await db
     .collection("checkouts")
     .add(req.body)
@@ -38,6 +40,8 @@ app.post("/", async (req, res) => {
 
       request(clientServerOptions, function (error, response) {
         let body = JSON.parse(response.body);
+
+        logger.info(`Response PagSeguro: ${body}`);
 
         if (body.error_messages) {
           res.status(500).json({
