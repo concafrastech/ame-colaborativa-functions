@@ -15,17 +15,24 @@ app.use(cors({ origin: true }));
 app.post("/", async (req, res) => {
   logger.info("Iniciando criação de pedido");
   logger.info(req.body);
+  let apiUrl = process.env.SANDBOX_API_PAGSEGURO;
+  let token = process.env.SANDBOX_TOKEN_PAGSEGURO;
+
+  if (req.body.isProduction) {
+    apiUrl = process.env.API_PAGSEGURO;
+    token = process.env.TOKEN_PAGSEGURO;
+  }
 
   await db
     .collection("orders")
     .add(req.body)
     .then(() => {
       let clientServerOptions = {
-        uri: `${process.env.SANDBOX_API_PAGSEGURO}/orders`,
-        body: JSON.stringify(req.body),
+        uri: `${apiUrl}/orders`,
+        body: JSON.stringify(req.body.order),
         method: "POST",
         headers: {
-          Authorization: `Bearer ${process.env.SANDBOX_TOKEN_PAGSEGURO}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       };
