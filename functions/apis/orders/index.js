@@ -37,19 +37,24 @@ app.post("/", async (req, res) => {
         },
       };
 
-      request(clientServerOptions, function (error, response) {
-        console.log(error, response.body);
+      request(clientServerOptions, async function (error, response) {
         let body = JSON.parse(response.body);
+        logger.info("Response PagSeguro: ", body);
 
-        if (body.error_messages) {
-          res.status(500).json({
-            data: response.body,
+        await db
+          .collection("orders-success")
+          .add(body)
+          .then(() => {
+            if (body.error_messages) {
+              res.status(500).json({
+                data: response.body,
+              });
+            } else {
+              res.status(201).json({
+                data: response.body,
+              });
+            }
           });
-        } else {
-          res.status(201).json({
-            data: response.body,
-          });
-        }
       });
     });
 });
